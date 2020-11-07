@@ -2,6 +2,8 @@ import { reactive, readonly } from "vue"
 import { Post } from "./types";
 import axios from "axios";
 
+import { todayPost, thisWeek, thisMonth } from "./Mocks";
+
 interface PostState {
     ids: string[],
     all: Record<string, Post>,
@@ -9,8 +11,16 @@ interface PostState {
 }
 
 const initialPostState = (): PostState => ({
-    ids: [],
-    all: {},
+    ids: [
+        todayPost.id.toString(),
+        thisWeek.id.toString(),
+        thisMonth.id.toString()
+    ],
+    all: {
+        [todayPost.id]: todayPost,
+        [thisWeek.id]: thisWeek,
+        [thisMonth.id]: thisMonth
+    },
     loaded: false,
 })
 
@@ -24,6 +34,7 @@ interface State {
 
 class Store {
     protected state: State
+
     constructor(initialState: State) {
         this.state = reactive(initialState);
     }
