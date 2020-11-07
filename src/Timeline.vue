@@ -20,7 +20,7 @@ import { Period, Post } from "./types";
 import { todayPost, thisWeek, thisMonth } from "./Mocks";
 import moment from "moment";
 import TimelinePost from "./TimelinePost.vue";
-//import { useStore } from "./Store";
+import { useStore } from "./Store";
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -32,17 +32,17 @@ export default defineComponent({
     const periods: Period[] = ["today", "this week", "this month"];
     const selectedPeriod = ref<Period>("today");
 
-    //const store = useStore();
+    const store = useStore();
 
+    if (!store.getState().posts.loaded) {
+      store.fetchPosts();
+    }
 
-/*
     const allPosts = store.getState().posts.ids.reduce<Post[]>((acc, id) => {
       const post = store.getState().posts.all[id];
       return acc.concat(post);
     }, []);
-    */
-
-    const = allPosts = []
+    console.log(allPosts);
 
     await delay(2000);
     const posts = computed(() =>
