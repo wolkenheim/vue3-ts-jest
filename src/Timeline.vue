@@ -33,7 +33,7 @@ export default defineComponent({
     const store = useStore();
 
     if (!store.getState().posts.loaded) {
-      store.fetchPosts();
+      await store.fetchPosts();
     }
 
     const allPosts = store.getState().posts.ids.reduce<Post[]>((acc, id) => {

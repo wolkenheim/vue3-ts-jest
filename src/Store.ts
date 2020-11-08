@@ -2,7 +2,7 @@ import { reactive, readonly } from "vue"
 import { Post } from "./types";
 import axios from "axios";
 
-import { todayPost, thisWeek, thisMonth } from "./Mocks";
+import { todayPost, thisWeek, thisMonth } from "./mocks";
 
 interface PostState {
     ids: string[],
@@ -12,14 +12,8 @@ interface PostState {
 
 const initialPostState = (): PostState => ({
     ids: [
-        todayPost.id.toString(),
-        thisWeek.id.toString(),
-        thisMonth.id.toString()
     ],
     all: {
-        [todayPost.id]: todayPost,
-        [thisWeek.id]: thisWeek,
-        [thisMonth.id]: thisMonth
     },
     loaded: false,
 })
@@ -47,6 +41,7 @@ class Store {
         const response = await axios.get<Post[]>('/posts');
         const ids: string[] = [];
         const all: Record<string, Post> = {}
+
         response.data.forEach(post => {
             ids.push(post.id.toString())
             all[post.id] = post;
