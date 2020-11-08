@@ -2,7 +2,7 @@
   <div class="panel-block" data-test="post">
     <div>
       <a data-test="post-headline">{{ post.title }}</a>
-      <div>{{ post.created.format("do MMM") }}</div>
+      <div>{{ post.created.format("Do MMM") }}</div>
     </div>
   </div>
 </template>

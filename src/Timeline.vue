@@ -22,8 +22,6 @@ import moment from "moment";
 import TimelinePost from "./TimelinePost.vue";
 import { useStore } from "./Store";
 
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
 export default defineComponent({
   components: {
     TimelinePost,
@@ -42,9 +40,7 @@ export default defineComponent({
       const post = store.getState().posts.all[id];
       return acc.concat(post);
     }, []);
-    console.log(allPosts);
 
-    await delay(2000);
     const posts = computed(() =>
       allPosts.filter((post) => {
         if (
