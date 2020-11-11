@@ -22,7 +22,7 @@
         />
       </div>
       <div class="column is-one-half">
-        {{ markdown }}
+        <div v-html="html" />
       </div>
     </div>
   </div>
@@ -31,7 +31,10 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from "vue";
 import { Post } from "./types";
-import { parse } from "marked";
+import { MarkedOptions, parse } from "marked";
+import { highlightAuto } from "highlight.js";
+import debounce from "lodash/debounce";
+
 export default defineComponent({
   name: "PostWriter",
   props: {
@@ -46,15 +49,21 @@ export default defineComponent({
     const markdown = ref(props.post.markdown);
     const html = ref("");
 
+    const markdownOptions: MarkedOptions = {
+      highlight: (code: string) => highlightAuto(code).value,
+    };
+
     const handleEdit = () => {
       markdown.value = contentEditable.value.innerText;
     };
 
+    const update = (value: string) => {
+      html.value = parse(value, markdownOptions);
+    };
+
     watch(
       () => markdown.value,
-      (value) => {
-        html.value = parse(value);
-      },
+      (value) => debounce(update, 500),
       { immediate: true }
     );
 
