@@ -29,8 +29,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { Post } from "./types";
+import { parse } from "marked";
 export default defineComponent({
   name: "PostWriter",
   props: {
@@ -43,16 +44,26 @@ export default defineComponent({
     const title = ref(props.post.title);
     const contentEditable = ref<null | HTMLDivElement>(null);
     const markdown = ref(props.post.markdown);
+    const html = ref("");
 
     const handleEdit = () => {
       markdown.value = contentEditable.value.innerText;
     };
+
+    watch(
+      () => markdown.value,
+      (value) => {
+        html.value = parse(value);
+      },
+      { immediate: true }
+    );
 
     onMounted(() => {
       contentEditable.value.innerText = markdown.value;
     });
     return {
       title,
+      html,
       contentEditable,
       handleEdit,
       markdown,
