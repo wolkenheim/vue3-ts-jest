@@ -1,6 +1,6 @@
 <template>
   <div>New Post</div>
-  <post-writer :post="post" />
+  <post-writer :post="post" @save="save" />
 </template>
 
 <script lang="ts">
@@ -23,8 +23,13 @@ export default defineComponent({
       html: "",
     };
 
+    const save = (post: Post) => {
+      console.log("heard", post);
+    };
+
     return {
       post,
+      save,
     };
   },
 });

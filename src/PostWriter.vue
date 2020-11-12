@@ -5,7 +5,12 @@
         <div class="field">
           <div class="label">Post</div>
           <div class="control">
-            <input v-model="title" type="text" class="input" />
+            <input
+              v-model="title"
+              type="text"
+              class="input"
+              data-test="title"
+            />
             {{ title }}
           </div>
         </div>
@@ -19,10 +24,23 @@
           id="markdown"
           ref="contentEditable"
           @input="handleEdit"
+          data-test="markdown"
         />
       </div>
       <div class="column is-one-half">
         <div v-html="html" />
+      </div>
+    </div>
+
+    <div class="columns">
+      <div class="column">
+        <button
+          @click="submit"
+          class="button is-primary is-pulled-right"
+          data-test="submit-post"
+        >
+          Submit
+        </button>
       </div>
     </div>
   </div>
@@ -43,7 +61,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props, ctx) {
     const title = ref(props.post.title);
     const contentEditable = ref<null | HTMLDivElement>(null);
     const markdown = ref(props.post.markdown);
@@ -57,15 +75,21 @@ export default defineComponent({
       markdown.value = contentEditable.value.innerText;
     };
 
+    const submit = () => {
+      const post: Post = {
+        ...props.post,
+        title: title.value,
+        markdown: markdown.value,
+        html: html.value,
+      };
+      ctx.emit("save", post);
+    };
+
     const update = (value: string) => {
       html.value = parse(value, markdownOptions);
     };
 
-    watch(
-      () => markdown.value,
-      (value) => debounce(update, 500),
-      { immediate: true }
-    );
+    watch(() => markdown.value, debounce(update, 500), { immediate: true });
 
     onMounted(() => {
       contentEditable.value.innerText = markdown.value;
@@ -76,6 +100,7 @@ export default defineComponent({
       contentEditable,
       handleEdit,
       markdown,
+      submit,
     };
   },
 });
