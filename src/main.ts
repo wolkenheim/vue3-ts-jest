@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import axios from 'axios'
 import * as mockData from './mocks'
 import 'highlight.js/styles/solarized-dark.css'
+import random from 'lodash/random'
 
 import { router } from './router';
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -16,7 +17,19 @@ axios.get = async (url: string) => {
     }
 }
 
+// @ts-ignore
+axios.post = async (url: string, payload: Post) => {
+    if (url === '/posts') {
+        await delay(1000);
+        const id = random(1000, 10000)
+        return Promise.resolve({
+            data: { id, ...payload }
+        })
+    }
+}
+
 import App from './App.vue'
+import { Post } from './types';
 
 const app = createApp(App)
 app.use(router)
